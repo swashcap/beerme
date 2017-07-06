@@ -1,7 +1,50 @@
 const levelup = require('levelup')
 const memdown = require('memdown')
 const streamToPromise = require('stream-to-promise')
-const { promisify } = require('util')
+const promisify = require('pify')
+const uuidv4 = require('uuid/v4')
+
+const seedData = [{
+  abv: 7.2,
+  brewery: 'Ecliptic Brewing',
+  description: null,
+  ibu: 70,
+  name: 'Filament Winter IPA',
+  price: 4.69,
+  rating: 3,
+  style: 'IPA',
+  tags: null
+}, {
+  abv: 7.3,
+  brewery: 'Hopworks Urban Brewery',
+  description: null,
+  ibu: 70,
+  name: 'Abominable Winter Ale',
+  price: 5.99,
+  rating: 3,
+  style: 'Winter Warmer',
+  tags: null
+}, {
+  abv: 6.9,
+  brewery: 'Lompoc Brewing',
+  description: null,
+  ibu: 58,
+  name: 'Lompoc Special Draft',
+  price: 4.99,
+  rating: 3,
+  style: 'ESB',
+  tags: null
+}, {
+  abv: 5.3,
+  brewery: 'Golden Valley Brewery',
+  description: null,
+  ibu: 28,
+  name: 'Dundee Porter',
+  price: 4.99,
+  rating: 4,
+  style: 'Porter',
+  tags: null,
+}]
 
 module.exports.register = (server, options, next) =>
   promisify(levelup)(memdown, { valueEncoding: 'json' }).then((db) => {
@@ -14,7 +57,7 @@ module.exports.register = (server, options, next) =>
      *
      * @returns {Promise<Object[]|Error>}
      */
-    server.expose('all', () => streamToPromise(db.createReadStream)
+    server.expose('all', () => streamToPromise(db.createReadStream())
       .then(datas => datas.map(
         ({ key: id, value }) => Object.assign({ id }, value)
       ))
@@ -50,8 +93,17 @@ module.exports.register = (server, options, next) =>
      */
     server.expose('put', (id, value) => put(id, value))
 
-    return next()
+    /**
+     * Seed database.
+     * @todo Move to a script
+     */
+    return promisify(db.batch.bind(db))(seedData.map(beer => ({
+      key: uuidv4(),
+      type: 'put',
+      value: beer
+    })))
   })
+  .then(next)
   .catch((error) => {
     console.error(error)
     process.exit(1)
