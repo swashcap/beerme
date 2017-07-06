@@ -1,51 +1,11 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import configureStore from './store/configureStore';
+import Root from './containers/Root';
 
-import BeerItem from './components/BeerItem';
+const store = configureStore();
 
 export default class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      beers: [],
-    }
-  }
-
-  componentWillMount() {
-    fetch('http://localhost:3000/beers')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`${response.status}: ${response.statusText}`);
-        }
-
-        return response.json();
-      })
-      .then(newBeers => this.setState({
-        beers: this.state.beers.concat(newBeers),
-      }))
-      .catch(error => console.error(error));
-  }
-
-  render() {
-    const { beers } = this.state;
-    return (
-      <View style={styles.container}>
-        {beers.map(beer => (
-          <BeerItem
-            key={beer.id}
-            onPress={() => undefined}
-            {...beer} />
-        ))}
-      </View>
-    );
+  render () {
+     return <Root store={store} />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
