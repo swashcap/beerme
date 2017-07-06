@@ -101,8 +101,6 @@ module.exports.put = (
   .then(beer => reply(beer).code(201))
   .catch(error => reply(boom.wrap(error)))
 
-module.exports.idSchema = joi.string().required()
-
 module.exports.schema = {
   abv: joi.number().positive().required(),
   brewery: joi.string().min(5).required(),

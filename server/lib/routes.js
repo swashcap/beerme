@@ -1,3 +1,5 @@
+const joi = require('joi')
+
 const beers = require('./controllers/beers.js')
 
 module.exports.register = (server, options, next) => {
@@ -5,7 +7,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: beers.idSchema,
+          id: joi.string().required(),
         }
       }
     },
@@ -17,7 +19,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: beers.idSchema,
+          id: joi.string(),
         }
       }
     },
@@ -29,7 +31,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: beers.idSchema,
+          id: joi.string(),
         }
       }
     },
@@ -51,7 +53,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: beers.idSchema,
+          id: joi.string().required(),
         },
         payload: beers.schema,
       }
