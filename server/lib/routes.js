@@ -1,12 +1,11 @@
 const beers = require('./controllers/beers.js')
-const joi = require('joi')
 
 module.exports.register = (server, options, next) => {
   server.route({
     config: {
       validate: {
         params: {
-          id: joi.number().integer().positive().required()
+          id: beers.idSchema,
         }
       }
     },
@@ -18,7 +17,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: joi.number().integer().positive()
+          id: beers.idSchema,
         }
       }
     },
@@ -30,7 +29,7 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: joi.number().integer().positive()
+          id: beers.idSchema,
         }
       }
     },
@@ -40,19 +39,9 @@ module.exports.register = (server, options, next) => {
   })
   server.route({
     config: {
-      /*
       validate: {
-        payload: {
-          abv: joi.number().positive().required(),
-          brewery: joi.string().min(5).required(),
-          description: joi.string(),
-          ibu: joi.number().integer().min(0),
-          name: joi.string().min(5).required(),
-          rating: joi.number().min(0).max(5).required(),
-          tags: joi.array().items(joi.string().min(5))
-        }
+        payload: beers.schema,
       }
-      */
     },
     handler: beers.post,
     method: 'POST',
@@ -62,17 +51,9 @@ module.exports.register = (server, options, next) => {
     config: {
       validate: {
         params: {
-          id: joi.number().integer().positive().required()
+          id: beers.idSchema,
         },
-        payload: {
-          abv: joi.number().positive().required(),
-          brewery: joi.string().min(5).required(),
-          description: joi.string(),
-          ibu: joi.number().integer().min(0),
-          name: joi.string().min(5).required(),
-          rating: joi.number().min(0).max(5).required(),
-          tags: joi.array().items(joi.string().min(5))
-        }
+        payload: beers.schema,
       }
     },
     handler: beers.put,

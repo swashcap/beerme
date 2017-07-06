@@ -1,4 +1,5 @@
 const boom = require('boom')
+const joi = require('joi')
 const uuidv4 = require('uuid/v4')
 
 module.exports.delete = (
@@ -99,3 +100,17 @@ module.exports.put = (
   .then(() => levelup.get(id))
   .then(beer => reply(beer).code(201))
   .catch(error => reply(boom.wrap(error)))
+
+module.exports.idSchema = joi.string().required()
+
+module.exports.schema = {
+  abv: joi.number().positive().required(),
+  brewery: joi.string().min(5).required(),
+  description: joi.string(),
+  ibu: joi.number().integer().min(0),
+  name: joi.string().min(5).required(),
+  price: joi.number().positive(),
+  rating: joi.number().min(0).max(5).required(),
+  style: joi.string().min(3).required(),
+  tags: joi.array().items(joi.string().min(5))
+}
