@@ -45,7 +45,9 @@ module.exports.get = (
     .catch(handleError)
   }
 
-  return reply(levelup.all()).catch(handleError)
+  return levelup.all()
+    .then(reply)
+    .catch(handleError)
 }
 
 /**
