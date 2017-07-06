@@ -1,5 +1,5 @@
 const hapi = require('hapi')
-const { promisify } = require('util')
+const promisify = require('pify')
 
 const goodPlugin = require('./plugins/good.js')
 const levelUpPlugin = require('./plugins/levelup.js')

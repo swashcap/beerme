@@ -5,9 +5,9 @@ const { promisify } = require('util')
 
 module.exports.register = (server, options, next) =>
   promisify(levelup)(memdown, { valueEncoding: 'json' }).then((db) => {
-    const del = promisify(db.del)
-    const get = promisify(db.get)
-    const put = promisify(db.put)
+    const del = promisify(db.del.bind(db))
+    const get = promisify(db.get.bind(db))
+    const put = promisify(db.put.bind(db))
 
     /**
      * {@link https://github.com/Level/levelup#createReadStream}
