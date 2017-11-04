@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux'
 
+import { fetchBeers } from '../actions'
 import BeerItem from '../components/BeerItem'
 
 const styles = StyleSheet.create({
@@ -12,34 +15,15 @@ const styles = StyleSheet.create({
   }
 })
 
-export default class ListView extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      beers: []
-    }
-  }
-
+class ListView extends Component {
   componentWillMount () {
-    fetch('http://localhost:3000/beers')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`${response.status}: ${response.statusText}`)
-        }
-
-        return response.json()
-      })
-      .then(newBeers => this.setState({
-        beers: this.state.beers.concat(newBeers)
-      }))
-      .catch(error => console.error(error))
+    this.props.dispatch(fetchBeers())
   }
 
   render () {
-    const { beers } = this.state
     return (
       <View style={styles.container}>
-        {beers.map(beer => (
+        {this.props.beers.map(beer => (
           <BeerItem
             key={beer.id}
             onPress={() => undefined}
@@ -49,3 +33,13 @@ export default class ListView extends Component {
     )
   }
 }
+
+ListView.propTypes = {
+  beers: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+  })).isRequired,
+  dispatch: PropTypes.func.isRequired
+}
+
+export default connect(({ beers }) => ({ beers }))(ListView)
+

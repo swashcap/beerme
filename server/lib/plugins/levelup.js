@@ -43,7 +43,7 @@ const seedData = [{
   price: 4.99,
   rating: 4,
   style: 'Porter',
-  tags: null,
+  tags: null
 }]
 
 module.exports.register = (server, options, next) =>
